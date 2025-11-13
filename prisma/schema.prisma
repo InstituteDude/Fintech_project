@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  PEMINJAM
+  INVESTOR
+}
+
+enum PengajuanStatus {
+  PENDING
+  APPROVED
+  FUNDED
+  REJECTED
+  CANCELLED
+}
+
+model User {
+  id           String       @id @default(cuid())
+  email        String       @unique
+  name         String
+  password     String
+  role         UserRole
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  pengajuan    Pengajuan[]
+  investments  Investment[] @relation("InvestorInvestments")
+}
+
+model Pengajuan {
+  id              String           @id @default(cuid())
+  userId          String
+  namaUsaha       String
+  deskripsi       String
+  ownerProfile    String?          @db.Text
+  ownerSocial     Json?
+  jumlahPinjaman  Int
+  jangkaWaktu     Int
+  tujuanPinjaman  String
+  status          PengajuanStatus  @default(PENDING)
+  collectedAmount Int              @default(0)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  user            User             @relation(fields: [userId], references: [id])
+  investments     Investment[]
+
+  @@index([status])
+  @@index([userId])
+}
+
+model Investment {
+  id          String   @id @default(cuid())
+  investorId  String
+  pengajuanId String
+  amount      Int
+  createdAt   DateTime @default(now())
+  investor    User     @relation("InvestorInvestments", fields: [investorId], references: [id])
+  pengajuan   Pengajuan @relation(fields: [pengajuanId], references: [id])
+
+  @@index([investorId])
+  @@index([pengajuanId])
+}

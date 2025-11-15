@@ -178,5 +178,3 @@ types/              # Typing untuk user & pengajuan
 - Pengguna contoh/seed ada di `lib/seed.ts` dan otomatis dibuat jika tabel pengajuan kosong.
 - Untuk mengedit file di VPS gunakan `nano path/to/file`. Setelah edit rebuild & restart.
 
-Dengan README ini, pengembang lain dapat menjalankan proyek ini di lokal maupun di server produksi. Selamat berkontribusi!
-
